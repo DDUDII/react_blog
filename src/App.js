@@ -6,10 +6,11 @@ import { useState } from 'react';
 
 function App() {
 
-let [제목, 이름변경] = useState(['기본 코트 추천', '여자 코트 추천', '봄 코트 추천']);
-let [하트, 하트변경] = useState([0,0,0]);
+let [제목, 이름변경] = useState([ '기본 코트 추천', '여자 코트 추천', '봄 코트 추천']);
+let [하트, 하트변경] = useState([0,0,0,]);
 let [modal, setModal] = useState(1);
 let [title, setTitle] = useState(2);
+let [inputs,setInputs] = useState();
 
   return (
     <div className="App">
@@ -32,22 +33,38 @@ let [title, setTitle] = useState(2);
       return (
       <div className='list' key={i}>
         <h4 onClick={ ()=>{setModal(1); setTitle(i) }}> { 제목 [i] }
-        <span onClick={ ()=>{ 
-          let copy3 = [...하트];
-          copy3[i] = copy3[i]+1;
-          하트변경(copy3)
+        <span onClick={ (e)=>{ 
+          e.stopPropagation();        // 이벤트 버블링을 막아줌
+          let copy = [...하트];
+          copy [i] = copy [i]+1;
+          하트변경(copy)
         } }>💟</span> {하트[i]} </h4>
         <p>2월 17일 발행</p>
+        <button onClick={()=>{
+          let copy = [...제목];
+          copy.splice(i,1);           /* 입력값 삭제 */
+          이름변경(copy);
+        }}>삭제</button>
       </div>
       )
         })
       }
-      <button onClick={ ()=> {setTitle(1)} }>제목0</button>
+      <input onChange={(e)=>          /* 이벤트 핸들러 확인  */
+      {  setInputs(e.target.value);
+         console.log(inputs);
+      } }></input>
+      <button onClick={ ()=> {
+        let copy5 = [...제목];
+        copy5.unshift(inputs)         /*입력값 추가해주는 메소드*/
+        이름변경(copy5)
+      }}>전송</button>
+
       { modal == 1 ? <Modal title={title} 이름변경={이름변경} 제목={제목}/>: null
       }
     </div>
   );
 }
+
  function Modal(props){
   return (
     <div className='modal'>
@@ -57,7 +74,7 @@ let [title, setTitle] = useState(2);
       <button>
         글수정</button>
     </div>
-      
+
   )
  }
 export default App;
